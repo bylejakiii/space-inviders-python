@@ -2,7 +2,7 @@
 import pygame.freetype
 
 from game_logic import game_objects, collisions
-clock = pygame.time.Clock()
+MENU_TEXT = {'texts': ["START", "USTAWIENIA", "WYJSCIE"], 'start_cords': [400, 150]}
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
 pygame.init()
@@ -32,6 +32,9 @@ def game():
                     if bullet_obj.state == "ready":
                         bullet_obj.state = "fire"
                         bullet_obj.X = player_obj.X
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    menu()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     player_obj.change = 0
@@ -64,8 +67,8 @@ def game():
 
 
 def menu():
+    strzałka = game_objects.Pointer()
     running = True
-    statement = 1
     while running:
         screen.fill((100, 100, 255))
         for event in pygame.event.get():
@@ -73,15 +76,22 @@ def menu():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    statement += 1
+                    strzałka.update_statement(True)
                     key_not_lock = False
-                    print(statement)
                 if event.key == pygame.K_UP:
-                    statement -= 1
-                    print(statement)
+                    strzałka.update_statement(False)
+                if event.key == pygame.K_RETURN and strzałka.statement == 1:
+                    running = False
+                    game()
+                if event.key == pygame.K_RETURN and strzałka.statement == 3:
+                    running = False
 
+        for text in MENU_TEXT['texts']:
+            texture = game_objects.GameFonts()
+            x, y = MENU_TEXT['start_cords'][0], MENU_TEXT['start_cords'][1] * (MENU_TEXT['texts'].index(text) + 1)
+            screen.blit(texture.texture(text), (x, y))
 
-        start = pygame.draw.rect(screen, (255, 0, 255), (200,statement * 100, 120, 100))  # okno, kolor, X,Y, szerokosc, wysokosc
+        strzałka.render(screen)
         pygame.display.update()
 
 

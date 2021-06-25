@@ -40,3 +40,33 @@ class Bullet:
             screen.blit(self.bulletImg, (self.X, self.Y + 10))
 
 
+class GameFonts:
+    def __init__(self):
+        self.font = pygame.font.Font('assets/fonts/mono.ttf', 60)
+
+    def texture(self, text, color=0):
+        color_font = color if color != 0 else (0, 0, 0)
+        return self.font.render(text, False, color_font)
+
+
+class Pointer:
+    def __init__(self):
+        self.image = pygame.image.load('assets/strzałka.png')
+        self.X = 250
+        self.Y = 150
+        self.statement = 1
+
+    def update_statement(self, state):
+        if state:
+            self.statement += 1
+            if self.statement > 3:
+                self.statement = 1
+        else:
+            self.statement -= 1
+            if self.statement < 1:
+                self.statement = 3
+
+    def render(self, screen):
+        screen.blit(self.image, (self.X, self.Y * self.statement))
+
+
