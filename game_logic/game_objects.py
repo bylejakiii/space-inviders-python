@@ -4,7 +4,7 @@ import random
 
 class Player:
     def __init__(self):
-        self.playerImg = pygame.image.load('assets/space-invaders.png')
+        self.playerImg = pygame.image.load('assets/statek.png').convert_alpha()
         self.X = 470.0
         self.Y = 480.0
         self.change = 0
@@ -14,21 +14,26 @@ class Player:
 
 
 class Enemy:
-    def __init__(self):
-        self.enemyImg = pygame.image.load('assets/pixelated-alien.png')
-        self.X = random.randrange(10, 980)
+    def __init__(self, screen):
+        self.enemyImg = pygame.image.load('assets/ufo.png').convert_alpha()
+        self.X = random.randrange(10, 900)
         self.Y = 100.0
-        self.X_change = 0.3
+        self.X_change = 0.2
         self.Y_change = 0
         self.Y_jump = 20
+        self.hp = 10
 
     def enemy(self, screen):
         screen.blit(self.enemyImg, (self.X, self.Y))
+        pygame.draw.rect(screen, (255, 0, 0), (self.X, self.Y - 15, 70, 5))
+        pygame.draw.rect(screen, (0, 255, 0), (self.X, self.Y - 15, 7 * self.hp, 5))
+
+
 
 
 class Bullet:
     def __init__(self):
-        self.bulletImg = pygame.image.load('assets/bullet.png')
+        self.bulletImg = pygame.image.load('assets/bullet.png').convert_alpha()
         self.X = 0
         self.Y = 480
         self.X_change = 0
@@ -51,7 +56,7 @@ class GameFonts:
 
 class Pointer:
     def __init__(self):
-        self.image = pygame.image.load('assets/strzałka.png')
+        self.image = pygame.image.load('assets/strzałka.png').convert_alpha()
         self.X = 250
         self.Y = 150
         self.statement = 1
@@ -59,12 +64,12 @@ class Pointer:
     def update_statement(self, state):
         if state:
             self.statement += 1
-            if self.statement > 3:
+            if self.statement > 2:
                 self.statement = 1
         else:
             self.statement -= 1
             if self.statement < 1:
-                self.statement = 3
+                self.statement = 2
 
     def render(self, screen):
         screen.blit(self.image, (self.X, self.Y * self.statement))

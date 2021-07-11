@@ -2,17 +2,20 @@
 import pygame.freetype
 
 from game_logic import game_objects, collisions
-MENU_TEXT = {'texts': ["START", "USTAWIENIA", "WYJSCIE"], 'start_cords': [400, 150]}
+MENU_TEXT = {'texts': ["START", "WYJSCIE"], 'start_cords': [400, 150]}
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
 pygame.init()
-screen = pygame.display.set_mode((1000, 600))
+display_x = 1000
+display_y = 600
+screen = pygame.display.set_mode((display_x, display_y))
+pygame.display.set_caption("Space Inviders - WSB")
 enemy_a = []
-for x in range(5):
-    enemy_obj = game_objects.Enemy()
+enemies = 3
+for x in range(enemies):
+    enemy_obj = game_objects.Enemy(screen)
     enemy_a.append(enemy_obj)
 player_obj = game_objects.Player()
-bullet_obj = game_objects.Bullet()
 collisions = collisions.CollisionCalculate()
 
 
@@ -29,9 +32,15 @@ def game():
                 if event.key == pygame.K_RIGHT:
                     player_obj.change = 0.8
                 if event.key == pygame.K_SPACE:
-                    if bullet_obj.state == "ready":
-                        bullet_obj.state = "fire"
-                        bullet_obj.X = player_obj.X
+                   try:
+                       if bullet_obj.state == "ready":
+                           bullet_obj.state = "fire"
+                           bullet_obj.X = player_obj.X
+                   except:
+                       bullet_obj = game_objects.Bullet()
+                       if bullet_obj.state == "ready":
+                           bullet_obj.state = "fire"
+                           bullet_obj.X = player_obj.X
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     menu()
@@ -51,17 +60,29 @@ def game():
                 enemy.X_change = -0.3
                 enemy.Y += enemy.Y_jump
             enemy.X += enemy.X_change
-            collision = collisions.isCollision(bullet_obj, enemy)
+            try:
+                collision = collisions.isCollision(bullet_obj, enemy)
+            except:
+                collision = False
             if collision:
                 enemy.Y = 100
-            enemy.enemy(screen)
-        if bullet_obj.state == "fire":
-            bullet_obj.Y -= bullet_obj.Y_change
-            if bullet_obj.Y <= 0:
-                bullet_obj.state = "ready"
-                bullet_obj.Y = 480
+                del bullet_obj
 
-        bullet_obj.bullet(screen)
+            if enemy.hp == 0:
+                del enemy_a[enemy_a.index(enemy)]
+                del enemy
+            else:
+                enemy.enemy(screen)
+        try:
+            if bullet_obj.state == "fire":
+                bullet_obj.Y -= bullet_obj.Y_change
+                if bullet_obj.Y <= 0:
+                    bullet_obj.state = "ready"
+                    bullet_obj.Y = 480
+            bullet_obj.bullet(screen)
+        except:
+            0
+
         player_obj.player(screen)
         pygame.display.update()
 
@@ -83,7 +104,7 @@ def menu():
                 if event.key == pygame.K_RETURN and strzałka.statement == 1:
                     running = False
                     game()
-                if event.key == pygame.K_RETURN and strzałka.statement == 3:
+                if event.key == pygame.K_RETURN and strzałka.statement == 2:
                     running = False
 
         for text in MENU_TEXT['texts']:
