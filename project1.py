@@ -21,6 +21,7 @@ collisions = collisions.CollisionCalculate()
 
 def game():
     running = True
+    score = 0
     while running:
         screen.fill((100, 100, 0))
         for event in pygame.event.get():
@@ -71,6 +72,7 @@ def game():
             if enemy.hp == 0:
                 del enemy_a[enemy_a.index(enemy)]
                 del enemy
+                score += 1
             else:
                 enemy.enemy(screen)
         try:
@@ -82,7 +84,10 @@ def game():
             bullet_obj.bullet(screen)
         except:
             0
+        wynik = f"wynik: {score}"
+        score_text = game_objects.GameFonts(22)
 
+        screen.blit(score_text.texture(wynik), (20, 570))
         player_obj.player(screen)
         pygame.display.update()
 
@@ -108,7 +113,7 @@ def menu():
                     running = False
 
         for text in MENU_TEXT['texts']:
-            texture = game_objects.GameFonts()
+            texture = game_objects.GameFonts(60)
             x, y = MENU_TEXT['start_cords'][0], MENU_TEXT['start_cords'][1] * (MENU_TEXT['texts'].index(text) + 1)
             screen.blit(texture.texture(text), (x, y))
 

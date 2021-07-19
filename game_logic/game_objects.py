@@ -37,7 +37,7 @@ class Bullet:
         self.X = 0
         self.Y = 480
         self.X_change = 0
-        self.Y_change = 1
+        self.Y_change = 0.75
         self.state = "ready"
 
     def bullet(self, screen):
@@ -46,8 +46,8 @@ class Bullet:
 
 
 class GameFonts:
-    def __init__(self):
-        self.font = pygame.font.Font('assets/fonts/mono.ttf', 60)
+    def __init__(self, font_size):
+        self.font = pygame.font.Font('assets/fonts/mono.ttf', font_size)
 
     def texture(self, text, color=0):
         color_font = color if color != 0 else (0, 0, 0)
