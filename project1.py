@@ -2,6 +2,7 @@
 import pygame.freetype
 
 from game_logic import game_objects, collisions
+from game_logic import game_progress as save
 MENU_TEXT = {'texts': ["START", "WYJSCIE"], 'start_cords': [400, 150]}
 BLUE = (106, 159, 181)
 WHITE = (255, 255, 255)
@@ -17,6 +18,7 @@ for x in range(enemies):
     enemy_a.append(enemy_obj)
 player_obj = game_objects.Player()
 collisions = collisions.CollisionCalculate()
+progress = save.Progress()
 
 
 def game():
@@ -122,3 +124,4 @@ def menu():
 
 
 menu()
+progress.save_game()
