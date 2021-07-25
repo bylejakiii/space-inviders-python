@@ -99,7 +99,7 @@ def game():
 
 
 def menu():
-    strzałka = game_objects.Pointer()
+    strzałka_menu = game_objects.Pointer()
     running = True
     while running:
         screen.fill((100, 100, 255))
@@ -108,14 +108,14 @@ def menu():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    strzałka.update_statement(True)
+                    strzałka_menu.update_statement(True)
                     key_not_lock = False
                 if event.key == pygame.K_UP:
-                    strzałka.update_statement(False)
-                if event.key == pygame.K_RETURN and strzałka.statement == 1:
+                    strzałka_menu.update_statement(False)
+                if event.key == pygame.K_RETURN and strzałka_menu.statement == 1:
                     running = False
                     game()
-                if event.key == pygame.K_RETURN and strzałka.statement == 2:
+                if event.key == pygame.K_RETURN and strzałka_menu.statement == 2:
                     running = False
 
         for text in MENU_TEXT['texts']:
@@ -123,7 +123,7 @@ def menu():
             x, y = MENU_TEXT['start_cords'][0], MENU_TEXT['start_cords'][1] * (MENU_TEXT['texts'].index(text) + 1)
             screen.blit(texture.texture(text), (x, y))
 
-        strzałka.render(screen)
+        strzałka_menu.render(screen)
         pygame.display.update()
 
 def level():
@@ -131,7 +131,7 @@ def level():
     level_a = []
     for text in range(progress.level):
         level_a.append(f"level {text+1}")
-    strzałka = game_objects.Pointer()
+    strzałka_level = game_objects.Pointer()
     running = True
     show_levels = []
     for numer in range(3):
@@ -146,10 +146,10 @@ def level():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    show_levels = strzałka.update_statement(True)
+                    show_levels = strzałka_level.update_statementV2(True, show_levels, level_a)
                     key_not_lock = False
                 if event.key == pygame.K_UP:
-                    show_levels = strzałka.update_statement(False)
+                    show_levels = strzałka_level.update_statementV2(False, show_levels, level_a)
                 # if event.key == pygame.K_RETURN and strzałka.statement == 1:
                 #     running = False
                 #     game()
@@ -160,6 +160,8 @@ def level():
             texture = game_objects.GameFonts(60)
             x, y = starting_cords[0], (starting_cords[1] * show_levels.index(text) + 1)
             screen.blit(texture.texture(text), (x, y))
+        strzałka_level.render(screen)
+        pygame.display.update()
 level()
 progress.save_game()
 #naprawić kod
