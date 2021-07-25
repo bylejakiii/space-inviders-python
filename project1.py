@@ -74,9 +74,13 @@ def game():
             if enemy.hp == 0:
                 del enemy_a[enemy_a.index(enemy)]
                 del enemy
+                progress.cash += 10
                 score += 1
             else:
                 enemy.enemy(screen)
+        if enemy_a.len == 0:
+            running = False
+            level()
         try:
             if bullet_obj.state == "fire":
                 bullet_obj.Y -= bullet_obj.Y_change
@@ -122,6 +126,40 @@ def menu():
         strzałka.render(screen)
         pygame.display.update()
 
+def level():
+    starting_cords = [400, 150]
+    level_a = []
+    for text in range(progress.level):
+        level_a.append(f"level {text+1}")
+    strzałka = game_objects.Pointer()
+    running = True
+    show_levels = []
+    for numer in range(3):
+        try:
+            show_levels.append(level_a[numer])
+        except:
+            True
+    while running:
+        screen.fill((100, 100, 255))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    show_levels = strzałka.update_statement(True)
+                    key_not_lock = False
+                if event.key == pygame.K_UP:
+                    show_levels = strzałka.update_statement(False)
+                # if event.key == pygame.K_RETURN and strzałka.statement == 1:
+                #     running = False
+                #     game()
+                # if event.key == pygame.K_RETURN and strzałka.statement == 2:
+                #     running = False
 
-menu()
+        for text in show_levels:
+            texture = game_objects.GameFonts(60)
+            x, y = starting_cords[0], (starting_cords[1] * show_levels.index(text) + 1)
+            screen.blit(texture.texture(text), (x, y))
+level()
 progress.save_game()
+#naprawić kod

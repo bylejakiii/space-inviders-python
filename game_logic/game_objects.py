@@ -70,6 +70,7 @@ class Pointer:
             self.statement -= 1
             if self.statement < 1:
                 self.statement = 2
+    # def update_statementV2(self, state, array, show):
 
     def render(self, screen):
         screen.blit(self.image, (self.X, self.Y * self.statement))
