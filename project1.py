@@ -11,17 +11,17 @@ display_x = 1000
 display_y = 600
 screen = pygame.display.set_mode((display_x, display_y))
 pygame.display.set_caption("Space Inviders - WSB")
-enemy_a = []
-enemies = 3
-for x in range(enemies):
-    enemy_obj = game_objects.Enemy(screen)
-    enemy_a.append(enemy_obj)
-player_obj = game_objects.Player()
 collisions = collisions.CollisionCalculate()
 progress = save.Progress()
 
-
-def game():
+def game(level_value = 1, reset_enemies = False):
+    enemy_a = []
+    enemies = 3
+    if reset_enemies:
+        for x in range(enemies):
+            enemy_obj = game_objects.Enemy(screen)
+            enemy_a.append(enemy_obj)
+    player_obj = game_objects.Player()
     running = True
     score = 0
     while running:
@@ -78,7 +78,7 @@ def game():
                 score += 1
             else:
                 enemy.enemy(screen)
-        if enemy_a.len == 0:
+        if enemy_a.__len__() == 0:
             running = False
             level()
         try:
@@ -98,7 +98,7 @@ def game():
         pygame.display.update()
 
 
-def menu():
+def menu(pause = False):
     strzałka_menu = game_objects.Pointer()
     running = True
     while running:
@@ -114,7 +114,7 @@ def menu():
                     strzałka_menu.update_statement(False)
                 if event.key == pygame.K_RETURN and strzałka_menu.statement == 1:
                     running = False
-                    game()
+                    level()
                 if event.key == pygame.K_RETURN and strzałka_menu.statement == 2:
                     running = False
 
@@ -126,7 +126,7 @@ def menu():
         strzałka_menu.render(screen)
         pygame.display.update()
 
-def level():
+def level(pause = False):
     starting_cords = [400, 150]
     level_a = []
     for text in range(progress.level):
@@ -138,7 +138,7 @@ def level():
         try:
             show_levels.append(level_a[numer])
         except:
-            True
+            print('błąd z show_levels')
     while running:
         screen.fill((100, 100, 255))
         for event in pygame.event.get():
@@ -150,18 +150,21 @@ def level():
                     key_not_lock = False
                 if event.key == pygame.K_UP:
                     show_levels = strzałka_level.update_statementV2(False, show_levels, level_a)
-                # if event.key == pygame.K_RETURN and strzałka.statement == 1:
-                #     running = False
-                #     game()
-                # if event.key == pygame.K_RETURN and strzałka.statement == 2:
-                #     running = False
+                if event.key == pygame.K_RETURN:
+                    level_value = strzałka_level.statement
+                    del strzałka_level
+                    game(level_value, False)
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    menu()
 
         for text in show_levels:
             texture = game_objects.GameFonts(60)
-            x, y = starting_cords[0], (starting_cords[1] * show_levels.index(text) + 1)
+            x, y = starting_cords[0], starting_cords[1] * (show_levels.index(text) + 1)
             screen.blit(texture.texture(text), (x, y))
+        print(show_levels,strzałka_level.statement, level_a, x, y)
         strzałka_level.render(screen)
         pygame.display.update()
-level()
+menu()
 progress.save_game()
-#naprawić kod
+#zrobić okno pauzy, mechanike okien, upgrade i trudność leveli

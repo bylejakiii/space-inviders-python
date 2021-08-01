@@ -71,16 +71,18 @@ class Pointer:
             if self.statement < 1:
                 self.statement = 2
     def update_statementV2(self, state, show, array):
-        array_len = array.len
+        if show.__len__() <= 1:
+            return show
+        array_len = array.__len__()
         if state:
             if array_len == state:
-                return
+                return show
             self.statement += 1
             if self.statement > 2:
                 self.statement = 1
         else:
             if array_len == state:
-                return
+                return show
             self.statement -= 1
             if self.statement < 1:
                 self.statement = 2
