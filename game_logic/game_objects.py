@@ -1,13 +1,15 @@
-import pygame
+from game_logic.controller import Controller
+import pyglet
 import random
-
 
 class Player:
     def __init__(self):
-        self.playerImg = pygame.image.load('assets/statek.png').convert_alpha()
-        self.X = 470.0
-        self.Y = 480.0
+        self.playerImg = pyglet.resource.image('assets/statek.png')
+        self.controller = Controller()
+        self.controller.X = 100.0
+        self.controller.Y = 100.0
         self.change = 0
+
 
     def player(self, screen):
         screen.blit(self.playerImg, (self.X, self.Y))
@@ -15,7 +17,7 @@ class Player:
 
 class Enemy:
     def __init__(self, screen):
-        self.enemyImg = pygame.image.load('assets/ufo.png').convert_alpha()
+        self.enemyImg = pyglet.resource.image('assets/ufo.png')
         self.X = random.randrange(10, 900)
         self.Y = 100.0
         self.X_change = 0.2
@@ -25,15 +27,15 @@ class Enemy:
 
     def enemy(self, screen):
         screen.blit(self.enemyImg, (self.X, self.Y))
-        pygame.draw.rect(screen, (255, 0, 0), (self.X, self.Y - 15, 70, 5))
-        pygame.draw.rect(screen, (0, 255, 0), (self.X, self.Y - 15, 7 * self.hp, 5))
+        # pygame.draw.rect(screen, (255, 0, 0), (self.X, self.Y - 15, 70, 5))
+        # pygame.draw.rect(screen, (0, 255, 0), (self.X, self.Y - 15, 7 * self.hp, 5))
 
 
 
 
 class Bullet:
     def __init__(self):
-        self.bulletImg = pygame.image.load('assets/bullet.png').convert_alpha()
+        self.bulletImg = pyglet.resource.image('assets/bullet.png')
         self.X = 0
         self.Y = 480
         self.X_change = 0
@@ -45,18 +47,18 @@ class Bullet:
             screen.blit(self.bulletImg, (self.X, self.Y + 10))
 
 
-class GameFonts:
-    def __init__(self, font_size):
-        self.font = pygame.font.Font('assets/fonts/mono.ttf', font_size)
+# class GameFonts:
+#     def __init__(self, font_size):
+#         self.font = pygame.font.Font('assets/fonts/mono.ttf', font_size)
 
-    def texture(self, text, color=0):
-        color_font = color if color != 0 else (0, 0, 0)
-        return self.font.render(text, False, color_font)
+#     def texture(self, text, color=0):
+#         color_font = color if color != 0 else (0, 0, 0)
+#         return self.font.render(text, False, color_font)
 
 
 class Pointer:
     def __init__(self):
-        self.image = pygame.image.load('assets/strzałka.png').convert_alpha()
+        # self.image = pygame.image.load('assets/strzałka.png').convert_alpha()
         self.X = 250
         self.Y = 150
         self.statement = 1
