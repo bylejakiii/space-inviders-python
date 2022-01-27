@@ -1,24 +1,31 @@
-﻿import pyglet 
-from pyglet.window import key
+﻿import game_logic
+from game_logic.controller import Global
+import pyglet
+import game_logic.variables as GLOB
 
 from game_logic import game_objects, collisions
 from game_logic import game_progress as save
-MENU_TEXT = {'texts': ["START", "WYJSCIE"], 'start_cords': [400, 150]}
-PLAYER_KEYS_GROUP = [key.LEFT,key.DOWN,key.UP,key.RIGHT]
-BLUE = (106, 159, 181)
-WHITE = (255, 255, 255)
 window = pyglet.window.Window()
 display_x = 1000
 display_y = 600
 player_obj = game_objects.Player()
-@window.event
+
 def on_draw():
     window.clear()
-    player_obj.playerImg.blit(player_obj.controller.X, player_obj.controller.Y)
+    player_obj.draw()
+window.on_draw = on_draw
 @window.event   
 def on_key_press(symbol, modifiers):
-    if symbol in PLAYER_KEYS_GROUP:
-        player_obj.controller.move(10, symbol)
+    if symbol in GLOB.PLAYER_KEYS_GROUP:
+        Global.Controller.Move.move(player_obj, 1, symbol)
+@window.event
+def on_key_release(symbol, modifiers):
+        if symbol in GLOB.PLAYER_KEYS_GROUP:
+            Global.Controller.Move.stop(player_obj, 1, symbol) 
+def update(dt, *args):
+    Global.Controller.Update.update_model(player_obj)
+    # print(f"FPS is {pyglet.clock.get_fps()}")
+    pass            
 
 
 
@@ -135,5 +142,7 @@ def on_key_press(symbol, modifiers):
 #         strzałka_menu.render(screen)
 #         pygame.display.update()
 
-pyglet.app.run()
+if __name__ == "__main__":
+    pyglet.clock.schedule( update, 1/60 )
+    pyglet.app.run()
 #zrobić okno pauzy, mechanike okien, upgrade i trudność leveli

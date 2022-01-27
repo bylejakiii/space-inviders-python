@@ -1,18 +1,18 @@
-from game_logic.controller import Controller
 import pyglet
 import random
 
 class Player:
     def __init__(self):
         self.playerImg = pyglet.resource.image('assets/statek.png')
-        self.controller = Controller()
-        self.controller.X = 100.0
-        self.controller.Y = 100.0
-        self.change = 0
+        
+        self.X = 100.0
+        self.Y = 100.0
+        self.changeY = 0.0
+        self.changeX = 0.0
 
 
-    def player(self, screen):
-        screen.blit(self.playerImg, (self.X, self.Y))
+    def draw(self):
+        return self.playerImg.blit(self.X, self.Y)
 
 
 class Enemy:
