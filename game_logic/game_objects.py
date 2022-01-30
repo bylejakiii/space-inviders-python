@@ -1,6 +1,7 @@
+from contextlib import nullcontext
 import pyglet
 import random
-
+import game_logic.variables as V
 class Player:
     def __init__(self):
         self.playerImg = pyglet.resource.image('assets/statek.png')
@@ -13,38 +14,59 @@ class Player:
 
     def draw(self):
         return self.playerImg.blit(self.X, self.Y)
+    def update(self):
+        self.X += self.changeX
+        self.Y += self.changeY
+        if self.X < 0:
+            self.X = 0
+        if self.X > V.display_width - 40:
+            self.X = V.display_width - 40
+        if self.Y < 0:
+            self.Y = 0
+        if self.Y > V.display_height - 60:
+            self.Y = V.display_height - 60    
 
 
 class Enemy:
-    def __init__(self, screen):
+    def __init__(self):
         self.enemyImg = pyglet.resource.image('assets/ufo.png')
         self.X = random.randrange(10, 900)
-        self.Y = 100.0
-        self.X_change = 0.2
-        self.Y_change = 0
+        self.Y = V.display_height - 100
+        self.changeX = 4
+        self.changeY = 0
         self.Y_jump = 20
         self.hp = 10
 
-    def enemy(self, screen):
-        screen.blit(self.enemyImg, (self.X, self.Y))
-        # pygame.draw.rect(screen, (255, 0, 0), (self.X, self.Y - 15, 70, 5))
-        # pygame.draw.rect(screen, (0, 255, 0), (self.X, self.Y - 15, 7 * self.hp, 5))
+    def draw(self):
+        return self.enemyImg.blit(self.X, self.Y)
+    def update(self):
+        self.X += self.changeX
+        self.Y += self.changeY
+        if self.X < 0:
+            self.changeX = 4
+        if self.X > V.display_width - 100:
+            self.changeX = -4
+    def __del__(self):
+        return True
 
 
 
 
 class Bullet:
-    def __init__(self):
+    def __init__(self, data=None):
         self.bulletImg = pyglet.resource.image('assets/bullet.png')
-        self.X = 0
-        self.Y = 480
-        self.X_change = 0
-        self.Y_change = 0.75
-        self.state = "ready"
+        self.X = data.X + 2
+        self.Y = data.Y + 40
+        self.changeX = 0
+        self.changeY = 8.75
 
-    def bullet(self, screen):
-        if self.state == "fire":
-            screen.blit(self.bulletImg, (self.X, self.Y + 10))
+    def draw(self):
+        return self.bulletImg.blit(self.X, self.Y)
+    def __del__(self):
+        return True
+    def update(self):
+        self.X += self.changeX
+        self.Y += self.changeY
 
 
 # class GameFonts:

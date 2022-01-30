@@ -1,34 +1,82 @@
-﻿import game_logic
-from game_logic.controller import Global
+﻿from game_logic.controller import Global
 import pyglet
+from pyglet.gl import *
 import game_logic.variables as GLOB
-
-from game_logic import game_objects, collisions
+from game_logic import game_objects
 from game_logic import game_progress as save
-window = pyglet.window.Window()
-display_x = 1000
-display_y = 600
+global display_x, display_y
+window = pyglet.window.Window(width=GLOB.display_width, height=GLOB.display_height)
+window.set_vsync(False)
 player_obj = game_objects.Player()
+global bullet_list
+bullet_list = []
+enemy_list = []
+for i in range(5):
+    enemy_list.append(game_objects.Enemy())
+
 
 def on_draw():
     window.clear()
+    gl.glClearColor(0, 255, 0, 0)
+    glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     player_obj.draw()
+    for enemy in enemy_list:
+        enemy.draw()
+    for bullet in bullet_list:
+        bullet.draw()
 window.on_draw = on_draw
 @window.event   
 def on_key_press(symbol, modifiers):
     if symbol in GLOB.PLAYER_KEYS_GROUP:
-        Global.Controller.Move.move(player_obj, 1, symbol)
+        Global.Controller.Move.move(player_obj, 5, symbol)
+    if symbol == GLOB.PLAYER_ATTACK:
+        GLOB.fire = True
 @window.event
 def on_key_release(symbol, modifiers):
-        if symbol in GLOB.PLAYER_KEYS_GROUP:
-            Global.Controller.Move.stop(player_obj, 1, symbol) 
+    if symbol in GLOB.PLAYER_KEYS_GROUP:
+        Global.Controller.Move.stop(player_obj, 5, symbol) 
+    if symbol == GLOB.PLAYER_ATTACK:
+        GLOB.fire = False    
+
+
 def update(dt, *args):
-    Global.Controller.Update.update_model(player_obj)
-    # print(f"FPS is {pyglet.clock.get_fps()}")
-    pass            
-
-
-
+    # Global.Controller.Update.update_model(player_obj)
+    player_obj.update()
+    print(f"FPS is {pyglet.clock.get_fps()}")
+    # Global.Controller.Update.update_model_by_other(bullet_list)
+    for bullet in bullet_list:
+        bullet.update()
+    for enemy in enemy_list:
+        enemy.update()    
+    Global.TrashCollector.destroy(bullet_list)
+    pass   
+def shot(dt, *args):
+    if GLOB.fire:
+        bullet_list.append(game_objects.Bullet(player_obj))
+def check_colisions(dt, *args):
+    if enemy_list != [] and bullet_list != []:
+        for bullet in bullet_list:
+            for enemy in enemy_list: 
+                try:
+                    col = Global.Controller.Action.isCollision(bullet, enemy)
+                except:
+                    col = False
+                if col:            
+                    bullet_list.remove(bullet)
+                    del bullet
+                    enemy.hp -= 1
+                    if enemy.hp == 0:
+                        enemy_list.remove(enemy)
+                        del enemy       
+        
+    
+         
+pyglet.clock.schedule_interval( update, 1/60 )
+pyglet.clock.schedule_interval( shot, 1/10 )
+pyglet.clock.schedule_interval( check_colisions, 1/30 )
+pyglet.app.run()
+#zrobić okno pauzy, mechanike okien, upgrade i trudność leveli
 
 # def game(level_value = 1, reset_enemies = False):
 #     enemy_a = []
@@ -142,7 +190,3 @@ def update(dt, *args):
 #         strzałka_menu.render(screen)
 #         pygame.display.update()
 
-if __name__ == "__main__":
-    pyglet.clock.schedule( update, 1/60 )
-    pyglet.app.run()
-#zrobić okno pauzy, mechanike okien, upgrade i trudność leveli
